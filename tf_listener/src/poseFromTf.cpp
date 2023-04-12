@@ -1,14 +1,16 @@
-#include <tflistener/poseFromTf.hpp>
+#include <tf_listener/poseFromTf.hpp>
 
-PoseLookup::PoseLookup(void(*readyCallback)(double dx, double dy, double dz, double r, double p, double y),
-            std::string parent, std::string child)
-{
-  this->readyCallback = readyCallback;
-  this->parent = parent;
-  this->child = child;
+PoseLookup::PoseLookup(void (*readyCallback)(double dx, double dy, double dz,
+                                             double r, double p, double y),
+                       std::string parent, std::string child) {
+//        buffer = std::make_unique<tf2_ros::Buffer>();
+//        listener = std::make_shared<tf2_ros::TransformListener>(buffer);
+        this->readyCallback = readyCallback;
+        this->parent = parent;
+        this->child = child;
 }
 
-void PoseLookup::waitForIt(int timeout_sec)
+/*void PoseLookup::waitForIt(int timeout_sec)
 {
   bool found = false;
   while(!found)
@@ -34,7 +36,7 @@ void PoseLookup::waitForIt(int timeout_sec)
     }
   }
 }
-
+*/
 void PoseLookup::getData(double* dx, double* dy, double* dz, double* r, double* p, double* y)
 {
   *dx = this->dx;
@@ -44,4 +46,3 @@ void PoseLookup::getData(double* dx, double* dy, double* dz, double* r, double* 
   *p = this->p;
   *y = this->y;
 }
-

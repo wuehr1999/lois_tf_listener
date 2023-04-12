@@ -1,11 +1,21 @@
 #ifndef POSE_FROM_TF_HPP
 #define POSE_FROM_TF_HPP
 
+#include <chrono>
+#include <functional>
+#include <memory>
 #include <string>
-#include <ros/ros.h>
-#include <tf/transform_listener.h>
+
+#include <string>
 #include <unistd.h>
 #include <math.h>
+
+#include <rclcpp/rclcpp.hpp>
+#include <geometry_msgs/msg/transform_stamped.hpp>
+#include <geometry_msgs/msg/twist.hpp>
+#include <tf2/exceptions.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/buffer.h>
 
 class PoseLookup
 {
@@ -21,8 +31,9 @@ private:
 
   std::string parent, child;
 
-  tf::TransformListener listener;
-  tf::StampedTransform transform;
+  std::shared_ptr<tf2_ros::Buffer> buffer;
+  std::shared_ptr<tf2_ros::TransformListener> listener;
+  geometry_msgs::msg::TransformStamped transform;
 
   double dx, dy, dz, r, p, y;
 

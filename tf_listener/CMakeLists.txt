@@ -1,32 +1,44 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(tf_listen)
-set(TARGET ${PROJECT_NAME}_node)
+project(tf_listener)
+
+add_definitions(-std=c++17 -g)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 include_directories(
   include
 )
 
-add_executable(${TARGET}
-  src/main.cpp
+add_library(tf_listener src/poseFromTf.cpp)
+ament_export_targets(tf_listener HAS_LIBRARY_TARGET)
+
+ament_target_dependencies(tf_listener
+    rclcpp
+    std_msgs
+    geometry_msgs
+    tf2
+    tf2_ros
 )
 
-target_compile_features(${TARGET} PRIVATE cxx_std_17)
-ament_target_dependencies(${TARGET} rclcpp std_msgs sensor_msgs)
+install(
+    DIRECTORY include/tf_listener
+    DESTINATION include
+)
 
-install(TARGETS
-  ${TARGET}
-  DESTINATION lib/${PROJECT_NAME})
-
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}
+install(
+   TARGETS tf_listener
+   EXPORT tf_listener
+   LIBRARY DESTINATION lib
+   ARCHIVE DESTINATION lib
+   RUNTIME DESTINATION lib
+   INCLUDES DESTINATION include
 )
 
 ament_package()
