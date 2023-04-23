@@ -1,10 +1,10 @@
 #include <tf_listener/poseFromTf.hpp>
 
-PoseLookup::PoseLookup(rclcpp::Node* node, void (*readyCallback)(double dx, double dy, double dz,
+PoseLookup::PoseLookup(std::shared_ptr<rclcpp::Logger> logger, rclcpp::Clock::SharedPtr clock, void (*readyCallback)(double dx, double dy, double dz,
                                              double r, double p, double y),
                        std::string parent, std::string child) {
-        this->node = node;
-        buffer = std::make_unique<tf2_ros::Buffer>(node->get_clock());
+        this->logger = logger;
+        buffer = std::make_unique<tf2_ros::Buffer>(clock);
         listener = std::make_shared<tf2_ros::TransformListener>(*buffer);
         this->readyCallback = readyCallback;
         this->parent = parent;
@@ -24,7 +24,7 @@ void PoseLookup::waitForIt(int timeout_sec)
       tf2::Matrix3x3 m(quat);
       m.getRPY(r, p, y);
       found = true;
-      RCLCPP_WARN(node->get_logger(), "%s, %s\n", parent.c_str(), child.c_str());
+      RCLCPP_WARN(*logger, "%s, %s\n", parent.c_str(), child.c_str());
       dx = transform.transform.translation.x;
       dy = transform.transform.translation.y;
       dz = transform.transform.translation.z;
@@ -35,7 +35,7 @@ void PoseLookup::waitForIt(int timeout_sec)
     }
     catch(const tf2::TransformException & ex)
     {
-      RCLCPP_WARN(node->get_logger(), "Waiting for transform %s", ex.what());
+      RCLCPP_WARN(*logger, "Waiting for transform %s", ex.what());
     }
   }
 }

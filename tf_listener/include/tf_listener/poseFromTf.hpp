@@ -20,7 +20,7 @@
 class PoseLookup
 {
 public:
-  PoseLookup(rclcpp::Node* node, void(*readyCallback)(double dx, double dy, double dz, double r, double p, double y), 
+  PoseLookup(std::shared_ptr<rclcpp::Logger> logger, rclcpp::Clock::SharedPtr clock, void(*readyCallback)(double dx, double dy, double dz, double r, double p, double y), 
              std::string parent = "base_link", std::string child = "road_frame");
   ~PoseLookup(){};
 
@@ -35,7 +35,7 @@ private:
   std::shared_ptr<tf2_ros::TransformListener> listener;
   geometry_msgs::msg::TransformStamped transform;
    
-  rclcpp::Node* node;
+  std::shared_ptr<rclcpp::Logger> logger;
 
   double dx, dy, dz, r, p, y;
 
